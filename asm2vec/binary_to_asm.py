@@ -52,9 +52,11 @@ def _fn_to_asm(pdf: dict | None, asm_minlen: int) -> str:
     """
     if pdf is None:
         return ''
-    if len(pdf['ops']) < asm_minlen:
+    if len(pdf.get('ops', [])) < asm_minlen:
+        if 'ops' not in pdf:
+            logging.info("KeyError: 'ops' not in pdf")
         return ''
-    if 'invalid' in [op['type'] for op in pdf['ops']]:
+    if 'invalid' in [op.get('type', '') for op in pdf['ops']]:
         return ''
 
     ops = pdf['ops']
