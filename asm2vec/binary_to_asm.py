@@ -99,7 +99,10 @@ def bin_to_asm(filename: Path, output_path: Path, asm_minlen: int, magic_bytes: 
 
     for fn in r.cmdj('aflj'):
         r.cmd(f's {fn["offset"]}')
-        asm = _fn_to_asm(r.cmdj('pdfj'), asm_minlen)
+        try:
+            asm = _fn_to_asm(r.cmdj('pdfj'), asm_minlen)
+        except:
+            logging.info("Unexpected error.")
         if asm:
             uid = _sha3(asm)
             asm = f''' .name {fn["name"]}\
