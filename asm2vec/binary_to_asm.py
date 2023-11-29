@@ -50,34 +50,33 @@ def _fn_to_asm(pdf: dict | None, asm_minlen: int) -> str:
     :param asm_minlen: minimum length of assembly functions to be extracted
     :return: ASM string
     """
-    try:
-        if pdf is None:
-            return ''
-        if len(pdf['ops']) < asm_minlen:
-            return ''
-        if 'invalid' in [op['type'] for op in pdf['ops']]:
-            return ''
+    if pdf is None:
+        return ''
+    if len(pdf.get('ops', [])) < asm_minlen:
+        if 'ops' not in pdf:
+            logging.info("KeyError: 'ops' not in pdf")
+        return ''
+    if 'invalid' in [op['type'] for op in pdf['ops']]:
+        return ''
 
-        ops = pdf['ops']
+    ops = pdf['ops']
 
-        labels, scope = {}, [op['offset'] for op in ops]
-        assert (None not in scope)
-        for i, op in enumerate(ops):
-            if op.get('jump') in scope:
-                labels.setdefault(op.get('jump'), i)
+    labels, scope = {}, [op['offset'] for op in ops]
+    assert (None not in scope)
+    for i, op in enumerate(ops):
+        if op.get('jump') in scope:
+            labels.setdefault(op.get('jump'), i)
 
-        output = ''
-        for op in ops:
-            if labels.get(op.get('offset')) is not None:
-                output += f'LABEL{labels[op["offset"]]}:\n'
-            if labels.get(op.get('jump')) is not None:
-                output += f' {op["type"]} LABEL{labels[op["jump"]]}\n'
-            else:
-                output += f' {_normalize(op["opcode"])}\n'
-        return output
-    except:
-        print('Key error.')
-        return None
+    output = ''
+    for op in ops:
+        if labels.get(op.get('offset')) is not None:
+            output += f'LABEL{labels[op["offset"]]}:\n'
+        if labels.get(op.get('jump')) is not None:
+            output += f' {op["type"]} LABEL{labels[op["jump"]]}\n'
+        else:
+            output += f' {_normalize(op["opcode"])}\n'
+
+    return output
 
 
 def bin_to_asm(filename: Path, output_path: Path, asm_minlen: int, magic_bytes: list[str]) -> int:
