@@ -157,11 +157,11 @@ def convert_to_asm(
                     function_count = bin_to_asm(Path(entry), Path(out_dir), minlen_lower, magic_bytes)
                     if function_count == 0:
                         os.rmdir(out_dir)
+                        not_disassembled += 1
                         logging.info('The binary {} was not disassembled'.format(entry.name))
                     else:
                         binary_count += 1
                         disassembled_bins.append(entry.name)
-                        not_disassembled += 1
                 else:
                     binary_count += 1
                     disassembled_bins.append(entry.name)
