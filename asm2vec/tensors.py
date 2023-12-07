@@ -27,7 +27,7 @@ def move_files(abs_dirname, limit):
             count += 1
 
 
-def calc_tensors(asm_path: str, tensor_path: str, model_path: str, epochs: int, limit: int = 300,
+def calc_tensors(asm_path: str, tensor_path: str, model_path: str, epochs: int, limit: int,
                  device: str = 'cpu', learning_rate: float = 0.02) -> list:
     """
     Calculates vector representation of a binary as the mean per column of the vector representations of its assembly
