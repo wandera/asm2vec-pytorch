@@ -1,4 +1,5 @@
 import os
+import shutil
 import torch
 import logging
 from pathlib import Path
@@ -8,9 +9,53 @@ from asm2vec.train import train, load_model, load_data
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 
-def calc_tensors(
-        asm_path: str, tensor_path: str, model_path: str, epochs: int, device: str = 'cpu', learning_rate: float = 0.02
-) -> list:
+def move_files(abs_dirname, limit) -> list:
+    """Moves files from a directory into subdirectories
+    :param abs_dirname: absolute path to the directory
+    :param limit: if the directory contains more that #limit files, they are split into subdirectories
+    """
+
+    subdirs_list = []
+    path = Path(abs_dirname)
+    files = [os.path.join(abs_dirname, f) for f in os.listdir(abs_dirname) if not f.startswith('.')]
+    if len(files) > limit:
+        count = 0
+        for f in files:
+            if count % limit == 0:
+                subdir_name = f'{abs_dirname}_{count // limit}'
+                os.mkdir(subdir_name)
+                subdirs_list.append(subdir_name)
+
+            f_base = os.path.basename(f)
+            shutil.move(f, os.path.join(subdir_name, f_base))
+            count += 1
+
+    return subdirs_list
+
+
+def save_partial_tensors(tensor_path: str) -> list:
+    """Saves the tensor produced per binary that exceeds the limit of assembly functions as a single tensor
+    by calculating the average of the partial tensors
+    :param tensor_path: path to the directory where the tensors are saved
+    """
+    tensors_full_list = [f[:40] for f in os.listdir(tensor_path) if (not f.startswith('.'))]
+    tensors_list = list(set(tensors_full_list))
+
+    for tensor in tensors_list:
+        if tensors_full_list.count(tensor) > 1:
+            tensor_list = [torch.load(Path(os.path.join(tensor_path, x))).detach().squeeze() for x in
+                           os.listdir(tensor_path) if x[:40] == tensor]
+            torch.save(torch.mean(torch.stack(tensor_list), dim=0), os.path.join(tensor_path, tensor))
+            for file_name in os.listdir(tensor_path):
+                if file_name.startswith(f"{tensor}_"):
+                    os.remove(os.path.join(tensor_path, file_name))
+    tensors_final_list = [f for f in os.listdir(tensor_path) if (not f.startswith('.'))]
+
+    return tensors_final_list
+
+
+def calc_tensors(asm_path: str, tensor_path: str, model_path: str, epochs: int, limit: int,
+                 device: str = 'cpu', learning_rate: float = 0.02) -> list:
     """
     Calculates vector representation of a binary as the mean per column of the vector representations of its assembly
     functions.
@@ -18,23 +63,27 @@ def calc_tensors(
     :param tensor_path: Path to folder to store the tensors
     :param model_path: Path to the trained model
     :param epochs: Number of epochs
+    :param limit: if the directory contains more that #limit files, they are split into subdirectories
     :param device: 'auto' | 'cuda' | 'cpu'
     :param learning_rate: Learning rate
     :return: List of tensors
     """
-    tensors_list = []
     if device == 'auto':
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     if os.path.isfile(model_path):
         model, tokens = load_model(model_path, device=device)
     else:
-        print("No valid model")
+        logging.info("No valid model")
         return []
 
     dir0 = Path(tensor_path)
     if not (os.path.exists(dir0)):
         os.mkdir(dir0)
+
+    files = [f for f in os.listdir(asm_path) if (not f.startswith('.'))]
+    for f in files:
+        move_files(os.path.join(asm_path, f), limit)
 
     if os.path.isdir(asm_path):
         obj = os.scandir(asm_path)
@@ -65,9 +114,10 @@ def calc_tensors(
                         torch.save(tensor, tensor_file)
                     else:
                         torch.save(tens.mean(0), tensor_file)
-                    tensors_list.append(entry.name)
 
     else:
         logging.info("No valid directory")
+
+    tensors_list = save_partial_tensors(tensor_path)
 
     return tensors_list
