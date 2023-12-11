@@ -112,16 +112,4 @@ def calc_tensors(asm_path: str, tensor_path: str, model_path: str, epochs: int, 
 
     save_partial_tensors(tensor_path)
 
-    # tensors_full_list = [f[:40] for f in os.listdir(tensor_path) if (not f.startswith('.'))]
-    # tensors_list = list(set(tensors_full_list))
-    #
-    # for tensor in tensors_list:
-    #     if tensors_full_list.count(tensor) > 1:
-    #         tensor_list = [torch.load(Path(os.path.join(tensor_path, x))).detach().squeeze() for x in
-    #                        os.listdir(tensor_path) if x[:40] == tensor]
-    #         torch.save(torch.mean(torch.stack(tensor_list), dim=0), os.path.join(tensor_path, tensor))
-    #         for fname in os.listdir(tensor_path):
-    #             if fname.startswith(f"{tensor}_"):
-    #                 os.remove(os.path.join(tensor_path, fname))
-
     return tensors_list
