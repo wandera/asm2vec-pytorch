@@ -1,0 +1,30 @@
+ .name sym.func.1001246c2            .offset 00000001001246c2            .file 34cdc8fb7b23b5a66d953d8e76a1d77d520c0d69 push rbp
+ mov rbp, rsp
+ push r15
+ push r14
+ push r12
+ push rbx
+ mov r15, rdx
+ mov r14, rsi
+ mov r12, rdi
+ mov rdi, rdx
+ call CONST
+ mov rbx, rax
+ mov rdi, r12
+ mov rsi, r14
+ mov rdx, rax
+ call qword [rip + CONST]
+ mov r14, rax
+ cmp rbx, r15
+ cjmp LABEL18
+ mov rsi, qword [rip + CONST]
+ mov rdi, rbx
+ call qword [rip + CONST]
+LABEL18:
+ mov rax, r14
+ pop rbx
+ pop r12
+ pop r14
+ pop r15
+ pop rbp
+ ret

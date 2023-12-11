@@ -1,0 +1,45 @@
+ .name sym.func.100125080            .offset 0000000100125080            .file 34cdc8fb7b23b5a66d953d8e76a1d77d520c0d69 push rbp
+ mov rbp, rsp
+ push r15
+ push r14
+ push r12
+ push rbx
+ mov rax, rsi
+ test byte [rdi + CONST], CONST
+ cjmp LABEL8
+ add rax, CONST
+ mov esi, CONST
+ mov rdi, rax
+ pop rbx
+ pop r12
+ pop r14
+ pop r15
+ pop rbp
+ jmp CONST
+LABEL8:
+ mov rbx, rdi
+ mov r14d, dword [rdi + CONST]
+ mov r12d, dword [rdi + CONST]
+ sub rbx, r12
+ lea rdi, [r14 + CONST]
+ and rdi, CONST
+ add rdi, rax
+ mov esi, CONST
+ call CONST
+ mov r15, rax
+ mov rdi, rax
+ mov rsi, rbx
+ mov rdx, r14
+ call CONST
+ lea rbx, [r15 + r12]
+ mov esi, CONST
+ mov rdi, rbx
+ call CONST
+ mov qword [r15 + r12 + CONST], CONST
+ mov rax, rbx
+ pop rbx
+ pop r12
+ pop r14
+ pop r15
+ pop rbp
+ ret
