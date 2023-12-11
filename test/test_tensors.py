@@ -12,15 +12,16 @@ class TestTensors(TestCase):
     def setUpClass(cls) -> None:
         print("\n--- TestTensors ---")
         cls.data_path = path.join(__data__, "partial_tensors/")
-        cls.assembly_path = path.join(__data__, "assembly_functions/")
+        cls.assembly_path = __data__
 
     def test_move_files(self):
-        limit = 1000
+        limit = 2
         binary_dir = "129d99db0085b124617b3fc355daccf84e92c19c"
         assembly_dirs = ['129d99db0085b124617b3fc355daccf84e92c19c_0',
                          '129d99db0085b124617b3fc355daccf84e92c19c_1',
                          '129d99db0085b124617b3fc355daccf84e92c19c_2']
         expected_assembly_dirs = [os.path.abspath(os.path.join(self.assembly_path, x)) for x in assembly_dirs]
+        print(expected_assembly_dirs)
         self.assertEqual(
             move_files(os.path.join(self.assembly_path, binary_dir), limit), expected_assembly_dirs)
 
