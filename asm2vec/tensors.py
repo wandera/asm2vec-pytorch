@@ -44,7 +44,7 @@ def save_partial_tensors(tensor_path: str) -> list:
             for fname in os.listdir(tensor_path):
                 if fname.startswith(f"{tensor}_"):
                     os.remove(os.path.join(tensor_path, fname))
-    tensors_final_list = [f for f in os.listdir(tensor_path)]
+    tensors_final_list = os.listdir(tensor_path)
 
     return tensors_final_list
 
