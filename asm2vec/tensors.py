@@ -14,6 +14,7 @@ def move_files(abs_dirname, limit):
     :param abs_dirname: absolute path to the directory
     :param limit: if the directory contains more that #limit files, they are split into subdirectories
     """
+
     files = [os.path.join(abs_dirname, f) for f in os.listdir(abs_dirname) if not f.startswith('.')]
     if len(files) > limit:
         count = 0
@@ -27,7 +28,7 @@ def move_files(abs_dirname, limit):
             count += 1
 
 
-def save_partial_tensors(tensor_path: str):
+def save_partial_tensors(tensor_path: str) -> list:
     """Saves the tensor produced per binary that exceeds the limit of assembly functions as a single tensor
     by calculating the average of the partial tensors
     :param tensor_path: path to the directory where the tensors are saved
@@ -43,6 +44,9 @@ def save_partial_tensors(tensor_path: str):
             for fname in os.listdir(tensor_path):
                 if fname.startswith(f"{tensor}_"):
                     os.remove(os.path.join(tensor_path, fname))
+    tensors_final_list = [f for f in os.listdir(tensor_path)]
+
+    return tensors_final_list
 
 
 def calc_tensors(asm_path: str, tensor_path: str, model_path: str, epochs: int, limit: int = 300,
@@ -59,7 +63,6 @@ def calc_tensors(asm_path: str, tensor_path: str, model_path: str, epochs: int, 
     :param learning_rate: Learning rate
     :return: List of tensors
     """
-    tensors_list = []
     if device == 'auto':
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -110,6 +113,6 @@ def calc_tensors(asm_path: str, tensor_path: str, model_path: str, epochs: int, 
     else:
         logging.info("No valid directory")
 
-    save_partial_tensors(tensor_path)
+    tensors_list = save_partial_tensors(tensor_path)
 
     return tensors_list
