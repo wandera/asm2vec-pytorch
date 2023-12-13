@@ -28,6 +28,6 @@ class TestTensors(TestCase):
     def test_save_partial_tensors(self):
         """Calculates the average of tensors with the same SHA1 prefix, saves it in a separate tensors
         and returns list of files in the directory"""
-        expected_tensor_list = ['34cdc8fb7b23b5a66d953d8e76a1d77d520c0d69',
-                                '129d99db0085b124617b3fc355daccf84e92c19c']
+        expected_tensor_list = ['129d99db0085b124617b3fc355daccf84e92c19c',
+                                '34cdc8fb7b23b5a66d953d8e76a1d77d520c0d69']
         self.assertEqual(save_partial_tensors(self.data_path), expected_tensor_list)
