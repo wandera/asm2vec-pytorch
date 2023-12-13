@@ -30,4 +30,4 @@ class TestTensors(TestCase):
         and returns list of files in the directory"""
         expected_tensor_list = ['129d99db0085b124617b3fc355daccf84e92c19c',
                                 '34cdc8fb7b23b5a66d953d8e76a1d77d520c0d69']
-        self.assertEqual(save_partial_tensors(self.data_path), expected_tensor_list)
+        self.assertEqual(sorted(save_partial_tensors(self.data_path)), sorted(expected_tensor_list))
