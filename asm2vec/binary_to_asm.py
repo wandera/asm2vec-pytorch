@@ -25,7 +25,7 @@ def _valid_exe(filename: str, magic_bytes: list[str]) -> bool:
     :return: Boolean of the header existing in magic bytes
     """
     magics = [bytes.fromhex(i) for i in magic_bytes]
-        if os.path.isfile(filename):
+    if os.path.isfile(filename):
         with open(filename, 'rb') as f:
             header = f.read(4)
             return header in magics
