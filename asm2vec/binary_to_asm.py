@@ -25,9 +25,10 @@ def _valid_exe(filename: str, magic_bytes: list[str]) -> bool:
     :return: Boolean of the header existing in magic bytes
     """
     magics = [bytes.fromhex(i) for i in magic_bytes]
-    with open(filename, 'rb') as f:
-        header = f.read(4)
-        return header in magics
+        if os.path.isfile(filename):
+        with open(filename, 'rb') as f:
+            header = f.read(4)
+            return header in magics
 
 
 def _normalize(opcode: str) -> str:
@@ -53,8 +54,6 @@ def _fn_to_asm(pdf: dict | None, asm_minlen: int) -> str:
     if pdf is None:
         return ''
     if len(pdf.get('ops', [])) < asm_minlen:
-        if 'ops' not in pdf:
-            logging.info("KeyError: 'ops' not in pdf")
         return ''
     if 'invalid' in [op.get('type', '') for op in pdf['ops']]:
         return ''
