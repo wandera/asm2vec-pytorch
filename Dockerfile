@@ -1,5 +1,3 @@
-# Need to install radare2 - how???
-
 ARG PY_VERSION=3.10
 ARG REPOSITORY=asm2vec-pytorch
 ARG RADARE2_VERSION=5.8.8
