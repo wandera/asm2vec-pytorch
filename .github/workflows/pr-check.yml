@@ -1,0 +1,17 @@
+name: Pull request check
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+
+concurrency:
+  group: ${{ github.event.repository.name }}/${{ github.ref_name }}/pr-check
+  cancel-in-progress: true
+
+jobs:
+  pr-check-uts:
+    name: pr-check-uts
+    runs-on: [ "self-hosted", "jamf-ubuntu-latest" ]
+    steps:
+    - name: "Run Unit Tests"
+      uses: jamf/github-actions-datascience/unit-tests@v1

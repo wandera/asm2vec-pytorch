@@ -1,0 +1,43 @@
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.version]
+source = "file"
+path = "asm2vec/version.py"
+
+[project.urls]
+Homepage = "https://github.com/wandera/asm2vec-pytorch"
+Issues = "https://github.com/wandera/asm2vec-pytorch/issues"
+
+[project]
+name = "asm2vec"
+dynamic = ["version"]
+authors = [{ name="Jamf Data Science", email="ww_datasciencechapter@jamf.com" }]
+description = "ASM2VEC algorithm using PyTorch"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "torch>=2.0,<3",
+    "r2pipe>=1.5,<2"
+]
+
+[[tool.pdm.source]]
+type = "find_links"
+url = "https://download.pytorch.org/whl/cpu/torch_stable.html"
+name = "torch"
+
+[[tool.pdm.source]]
+name = "artifactory"
+url = "https://artifactory.jamf.build/artifactory/api/pypi/pypi/simple"
+
+[tool.pdm.scripts]
+radare2 = {call = "scripts.radare2:install('5.8.8')"}
+reset_version = {call = "scripts.helpers:reset_version"}
+pre_install = {call = "scripts.helpers:update_version"}
+post_install = {composite = ["reset_version", "radare2"]}

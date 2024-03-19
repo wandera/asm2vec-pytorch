@@ -1,0 +1,8 @@
+.idea
+.github
+asm2vec.egg-info
+data
+catalog-info.yaml
+CODEOWNERS
+LICENSE
+SECURITY.md

@@ -1,0 +1,25 @@
+name: Artifactory publish
+
+on:
+  workflow_dispatch: {}
+
+env:
+  PACKAGE_NAME: "asm2vec"
+
+concurrency:
+  group: ${{ github.event.repository.name }}/release
+  cancel-in-progress: true
+
+jobs:
+  artifactory-publish:
+    name: Upload release to Jamf Artifactory
+    runs-on: [ "self-hosted", "jamf-ubuntu-latest" ]
+    steps:
+    - name: "Publish to Jamf Artifactory"
+      uses: jamf/github-actions-datascience/publish-to-artifactory@v1
+      with:
+        package_name: ${{ env.PACKAGE_NAME }}
+        branch: ${{ github.ref_name }}
+        artifactory_pip_username: ${{ secrets.ARTIFACTORY_PIP_USERNAME }}
+        artifactory_pip_token: ${{ secrets.ARTIFACTORY_PIP_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
