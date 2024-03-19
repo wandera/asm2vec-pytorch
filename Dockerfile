@@ -45,6 +45,4 @@ COPY --from=builder /${REPOSITORY}/__pypackages__/${PY_VERSION}/lib /${REPOSITOR
 # retrieve executables
 COPY --from=builder /${REPOSITORY}/__pypackages__/${PY_VERSION}/bin/* /bin/
 
-RUN r2 -h
-
 CMD ["/bin/sh"]
